@@ -2,16 +2,44 @@ var map;
 
 var circle;
 
-function geo_success(position){
-	console.log(position);
-	map.setView([position.coords.latitude, position.coords.longitude]);
+var latitude=0;
+var longitude=0;
+var accuracy=0;
+
+var heading=0;
+
+function set_pos(lat,lon,acc){
+	latitude = lat;
+	longitude = lon;
+	accuracy = acc;
+	map.setView([lat, lon]);
 	if(map.hasLayer(circle)) map.removeLayer(circle);
-	circle = L.circle([position.coords.latitude, position.coords.longitude], {
+	circle = L.circle([lat, lon], {
 		color: '#00f',
 		fillColor: '#00f',
 		fillOpacity: 0.5,
-		radius: position.coords.accuracy
+		radius: acc
 	}).addTo(map)
+
+}
+
+function add_pos(lat,lon){
+	set_pos(latitude + lat, longitude + lon,accuracy);
+}
+
+window.ondeviceorientation = function(event) {
+	Heading = event.webkitCompassHeading;
+}
+
+window.ondeviceorientation = function(event) {
+	var alpha = event.alpha;
+	var beta = event.beta;
+	var gamma = event.gamma;
+}
+
+function geo_success(position){
+	console.log(position);
+	set_pos(position.coords.latitude,position.coords.longitude,position.coords.accuracy);
 }
 
 window.onload = function(){
